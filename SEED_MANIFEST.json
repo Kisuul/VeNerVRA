@@ -1,0 +1,249 @@
+{
+  "behavioral_evaluations": "NOT RUN",
+  "date": "2026-11-04",
+  "files": [
+    {
+      "bytes": 64,
+      "path": ".gitattributes",
+      "sha256": "0b15d9e60d56e3115d91ffb3a23c565e388db6e4c81305fd2e4e4e41a12ae7c0"
+    },
+    {
+      "bytes": 538,
+      "path": ".github/workflows/validate.yml",
+      "sha256": "22706297fe9265902eb6c6857e971a93972708fcb2ad6f191d1d223fcb819390"
+    },
+    {
+      "bytes": 94,
+      "path": ".gitignore",
+      "sha256": "36f24c97d53b4a8b758e4557ed9823bbea95d3b96fd0a1d7f39a3a4b7fbaa646"
+    },
+    {
+      "bytes": 2482,
+      "path": "AGENTS.md",
+      "sha256": "45dde2533071557ca6d15e97cf28e12cd9d57c8da68f08c6f438ea96286383d9"
+    },
+    {
+      "bytes": 1374,
+      "path": "CONTRIBUTING.md",
+      "sha256": "9342955963c788e59869d52aa43777102313d1a13e5dd8e5558b624484c7b5a7"
+    },
+    {
+      "bytes": 4296,
+      "path": "README.md",
+      "sha256": "0a464f6dc0efe5745755700b10ef9d7ea3abcef98b88755f16e190064558aed0"
+    },
+    {
+      "bytes": 13166,
+      "path": "VEN.md",
+      "sha256": "1d8af935eeaa2438dcd23178ea60b1e8f8706eccc4d12dad3ef1643594c60b36"
+    },
+    {
+      "bytes": 1064,
+      "path": "VERIFICATION.md",
+      "sha256": "acd4cd481539c7dcf7584debccecdf1ff7c35ada0a9506fce9c92a46bc35f2ed"
+    },
+    {
+      "bytes": 3042,
+      "path": "docs/ARCHITECTURE.md",
+      "sha256": "d32dd2859ade30d9c488ff1c5e4be9f8edabab419e8149833333b03d317205b5"
+    },
+    {
+      "bytes": 2143,
+      "path": "docs/MIGRATION_FROM_1_1.md",
+      "sha256": "43b9c5ae74df12ff43ee6a6f3d16be27cf413ae3055099a96a4044d01c41ea14"
+    },
+    {
+      "bytes": 1545,
+      "path": "docs/PROVENANCE.md",
+      "sha256": "e37c5af0ccb7380a2d7aac20ed108d24f94cf76f0a98bb1fcd312118944c9c0e"
+    },
+    {
+      "bytes": 1186,
+      "path": "docs/QUICKSTART.md",
+      "sha256": "43fdaeceaf15046bda23294e4fe86fbbf18e1883db53f993387286713f4aaa8a"
+    },
+    {
+      "bytes": 1800,
+      "path": "docs/SECURITY.md",
+      "sha256": "e67a1d7cb1ebc02eddafd67409f07103704df49f15ccca7caf28f2d2c778c127"
+    },
+    {
+      "bytes": 3095,
+      "path": "docs/SOURCE_STANDARDS.md",
+      "sha256": "de9c22f486482eaf3cad7af10e0520d1ec7e71c0cfc81d88739485e3f6c84040"
+    },
+    {
+      "bytes": 3094,
+      "path": "docs/source/VeNerVRA-1.1.txt",
+      "sha256": "bc31c8fef35da36fbb1bf615a7e8e0846519ef145d44ccb46734dec8edf1e68a"
+    },
+    {
+      "bytes": 3800,
+      "path": "evaluations/SCENARIOS.md",
+      "sha256": "8b835468b97a540eb102ed75f50d211442eb77899e715e7a037a7ea17ab25d3a"
+    },
+    {
+      "bytes": 1824,
+      "path": "evaluations/SCORECARD.md",
+      "sha256": "7dd6cb40a207a4621152746799ea27fe1de3a273a3ac3ccc9b01515d689873a0"
+    },
+    {
+      "bytes": 870,
+      "path": "integration/kestrel/HOST_POINTER.md",
+      "sha256": "5213afae908c58b6b2fdc37a3117d33a4f29c29a277af2b9c6dba0063c2f7ba6"
+    },
+    {
+      "bytes": 2466,
+      "path": "integration/kestrel/README.md",
+      "sha256": "f403c222961b2a8748ea0f4c57bcf0ebaf832c0a972d28eba5e5e4323cbf5ae8"
+    },
+    {
+      "bytes": 863,
+      "path": "integration/kestrel/candidates/INDEX.md",
+      "sha256": "b702fa6957b0a60b43e718b098ce3b0fdf83344029defff767d2acd50716f51f"
+    },
+    {
+      "bytes": 3135,
+      "path": "integration/kestrel/candidates/research-claim-management/SKILL.md",
+      "sha256": "e3dc68bde825a6aa9eed06c529453320c6ca85fb36086564a5b6e6e704d5d0bc"
+    },
+    {
+      "bytes": 2696,
+      "path": "integration/kestrel/candidates/research-continuity/SKILL.md",
+      "sha256": "61a95690cc4b852f864e0a0ce9958810c0a85f9e1574f482671fc2ede7a36086"
+    },
+    {
+      "bytes": 3884,
+      "path": "integration/kestrel/candidates/research-source-evaluation/SKILL.md",
+      "sha256": "a3e0600972acb5a5a64e7fb1fcb52507bc1284183a3de24833d292fd879b6c59"
+    },
+    {
+      "bytes": 727,
+      "path": "research/INDEX.md",
+      "sha256": "27a277cc89fea1f8e963deaa6a030b6bdafb396057c880283991e585209329a0"
+    },
+    {
+      "bytes": 632,
+      "path": "research/examples/synthetic-cache/INDEX.md",
+      "sha256": "f6c34c33b3b8e9488911a161143156f3299cd5524867921d5fa1b73d88a21d64"
+    },
+    {
+      "bytes": 426,
+      "path": "research/examples/synthetic-cache/data/fictional-prompt.md",
+      "sha256": "a876e30655f0ef362680c6e0263123652d17b270d1c25737849f43c39528f00a"
+    },
+    {
+      "bytes": 969,
+      "path": "research/examples/synthetic-cache/handoff-2026-11-04-cache.md",
+      "sha256": "f5e517f884742e61249d13cf3b50ce91966143878d4090561602ce7b3257699d"
+    },
+    {
+      "bytes": 1170,
+      "path": "research/examples/synthetic-cache/hypothesis-2026-11-04-cache.md",
+      "sha256": "34ca05425e3218296472b59379107b0f324de418b832d85352ab046114b92ff4"
+    },
+    {
+      "bytes": 874,
+      "path": "research/examples/synthetic-cache/question-2026-11-04-cache.md",
+      "sha256": "123e6f98b5f840a15b927ceb0f50eb6fd80756b4ffd71f6c57df1c7434484550"
+    },
+    {
+      "bytes": 871,
+      "path": "research/examples/synthetic-cache/source-2026-11-04-fictional-prompt.md",
+      "sha256": "7acb034e3739cf16bf712bf5e74e47170a6f0e08aed9756507cec6928624ae5f"
+    },
+    {
+      "bytes": 1016,
+      "path": "research/templates/CHECKPOINT.md",
+      "sha256": "2412836820409366d2285429b680bf4362b4d8df1b31328c95582907d71c0707"
+    },
+    {
+      "bytes": 918,
+      "path": "research/templates/CLAIM.md",
+      "sha256": "fc55902d4dc10ad15566bd61204da3905833ac540c4942391b518c0f7e20e91b"
+    },
+    {
+      "bytes": 967,
+      "path": "research/templates/EXPERIMENT.md",
+      "sha256": "66b3d060c20bb863dc180c1f77c2c5c03ff47b84527a9e41c30b019511ceee0d"
+    },
+    {
+      "bytes": 926,
+      "path": "research/templates/HYPOTHESIS.md",
+      "sha256": "0d8887462db704aff10add8715a0ddccfccd91a3831a5c889c2f8c3a450fe8e1"
+    },
+    {
+      "bytes": 1211,
+      "path": "research/templates/INDEX.md",
+      "sha256": "8f69e9040d3089923b6bb7a964c4235266fa756e9060de755dfe543a6cdce286"
+    },
+    {
+      "bytes": 740,
+      "path": "research/templates/INVESTIGATION_INDEX.md",
+      "sha256": "6badc9f25d7498aeb2a58b63a49acc640a407d14b50945aab4c9705973451650"
+    },
+    {
+      "bytes": 723,
+      "path": "research/templates/JOURNAL.md",
+      "sha256": "5a5c1d19c3d49a16822305eb18c4498049877c67a5dc04444a606798b46dc74c"
+    },
+    {
+      "bytes": 842,
+      "path": "research/templates/QUESTION.md",
+      "sha256": "a8427449fc419b7b3a00635b241bb632e012078e6a5ce727a311979fc949dd5d"
+    },
+    {
+      "bytes": 1010,
+      "path": "research/templates/SOURCE.md",
+      "sha256": "2773bfec92636b58a82b23bca24194baed3905e7766e3b91cf7e1f8678384ab3"
+    },
+    {
+      "bytes": 1706,
+      "path": "tests/test_contract.py",
+      "sha256": "f57e72a577bd9d52b93eee3043dd8b7b3b4565a69c7a95ea6a1cd1801275fdbf"
+    },
+    {
+      "bytes": 3899,
+      "path": "tests/test_validator.py",
+      "sha256": "84ae9e9cc04c08f4fbb3958084300d101465af210f5d17162ae5850a24cd5d04"
+    },
+    {
+      "bytes": 9173,
+      "path": "tools/validate_seed.py",
+      "sha256": "500bd0b4520c84e8f34790da7dfdc26ea17e29956e72f1a448de2e672ec14459"
+    },
+    {
+      "bytes": 5606,
+      "path": "ven/MEMORY_PROTOCOL.md",
+      "sha256": "0c7bfb6f6ab921f3f6f5db8250cc6f2bdbe875f9be08ca4e7af183574a0b6d81"
+    },
+    {
+      "bytes": 2038,
+      "path": "ven/PERMISSIONS.md",
+      "sha256": "fddeec29b4b089c6f634255e5f15870fdf581662ff3457ed8b137757da0a52af"
+    },
+    {
+      "bytes": 4496,
+      "path": "ven/RESEARCH_PROTOCOL.md",
+      "sha256": "b5f95449f9c1b318723db99df105a716ebc31922c761a3745538ddca57e7746c"
+    },
+    {
+      "bytes": 2125,
+      "path": "ven/STATE_PROTOCOL.md",
+      "sha256": "6f14f9feb49dafb63972caa02aaf60d163acb980732434af8238a693077ea5c7"
+    },
+    {
+      "bytes": 2075,
+      "path": "ven/VERIFICATION.md",
+      "sha256": "3a83340f1dd18c2b701bcfa2369c56638dca7339da2b997755000fa65833ca91"
+    }
+  ],
+  "integration_status": "proposed-not-installed",
+  "kestrel_baseline_commit": "c268a4d0be121738cbfdb0d7a90de7874299c0f2",
+  "name": "VeNerVRA-2.0",
+  "original_ven_source_sha256": "bc31c8fef35da36fbb1bf615a7e8e0846519ef145d44ccb46734dec8edf1e68a",
+  "regression_tests": "17 passed",
+  "structural_validation": "PASS",
+  "type": "static research agent repo seed",
+  "version": "2.0-candidate"
+}
