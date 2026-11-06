@@ -29,6 +29,7 @@ VeNerVRA (**Ven**, Value-Neutral Virtual Research Assistant) is an independent, 
 | --- | --- |
 | [VEN.md](VEN.md) | Agent identity and authoritative operating contract |
 | [ven/](ven/) | Research, memory, continuity, verification, and permissions protocols |
+| [Hostile audit playbook](docs/HOSTILE_SOFTWARE_AUDIT.md) | Candidate methodology for evidence-first adversarial software audits; not an installed skill |
 | [research/](research/) | Authoritative research records, templates, and clearly synthetic demonstration |
 | [integration/kestrel/](integration/kestrel/) | **Proposed**, inactive KestrelGaming integration and skill candidates |
 | [evaluations/](evaluations/) | Behavioral test specifications and scorecard (unrun) |
