@@ -4,6 +4,7 @@ This repository is the authoritative home for Ven's **research investigations**,
 
 | Investigation | Purpose | Status |
 | --- | --- | --- |
+| [Kestrel adversarial audit and blind-first review](kestrel-adversarial-audit/INDEX.md) | Source-pinned math-audit findings, P0 review-skill research, proposed blind-first method and next verification | ACTIVE — research and design; behavioral trial NOT RUN |
 | [Synthetic cache fixture](examples/synthetic-cache/INDEX.md) | Non-empirical, intentionally hypothetical example exercising record schema and unresolved evidence | Example only — NOT RESEARCH |
 | [Hostile audit readiness](hostile-audit-readiness/INDEX.md) | Candidate evidence-first hostile software audit methodology and resumable verification checkpoint | PARTIAL — no behavioral evaluation |
 
