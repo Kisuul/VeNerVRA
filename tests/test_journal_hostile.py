@@ -86,7 +86,7 @@ class HostileJournalBehavior(unittest.TestCase):
                          "CONFIRMED BUG: filename substrings count as links")
         result = journal.resume(self.root, "ven-methodology")
         self.assertEqual(1, result["available_records"])
-        
+
     def test_duplicate_record_ids_are_emitted_without_ambiguity_error(self):
         first = self.make_record(name="journal-a.md", record_id="2026-11-09-duplicate")
         second = self.make_record(name="journal-b.md", record_id="2026-11-09-duplicate")
