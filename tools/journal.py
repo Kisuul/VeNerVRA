@@ -15,7 +15,8 @@ import sys
 from pathlib import Path
 
 from validate_seed import (ID_RE, investigation_dirs, index_links_to,
-                           markdown_sections, parse_frontmatter, validate_record)
+                           markdown_sections, parse_frontmatter, validate_record,
+                           visible_markdown_lines)
 
 ROOT = Path(__file__).resolve().parents[1]
 JOURNAL_SECTIONS = (
@@ -113,11 +114,15 @@ def check_journal(path: Path, root: Path, public: bool = False) -> list[str]:
     if fields.get("kind") != "journal":
         errors.append("record kind must be journal")
     parsed = sections(text)
+    headings = [line[3:].strip() for line in visible_markdown_lines(text)
+                if line.startswith("## ")]
     for header in JOURNAL_SECTIONS:
         if header[3:] not in parsed:
             errors.append("missing journal section " + header)
         elif not parsed[header[3:]].strip():
             errors.append("empty journal section " + header)
+        if headings.count(header[3:]) > 1:
+            errors.append("duplicate journal section " + header)
     local_index = root / "research" / slug / "INDEX.md"
     if not index_links_to(local_index, record, root):
         errors.append("record absent from nearest investigation index")

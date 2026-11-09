@@ -230,10 +230,12 @@ def validate_repo(root: Path) -> List[str]:
     for source in root.rglob('*.md'):
         if 'templates' in source.relative_to(root).parts:
             continue
-        for match in LINK_RE.finditer(source.read_text(encoding='utf-8')):
-            problem = resolve_local_link(source, match.group(1), root)
-            if problem:
-                errors.append(f'{source.relative_to(root)}: {problem}')
+        for line in visible_markdown_lines(source.read_text(encoding='utf-8')):
+            line = re.sub(r'(`+).*?\1', '', line)
+            for match in LINK_RE.finditer(line):
+                problem = resolve_local_link(source, match.group(1), root)
+                if problem:
+                    errors.append(f'{source.relative_to(root)}: {problem}')
 
     master_index = root / 'research' / 'INDEX.md'
     seen: Dict[str, Path] = {}

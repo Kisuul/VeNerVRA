@@ -170,6 +170,16 @@ class HostileJournalBehavior(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "duplicate record id"):
             journal.resume(self.root, "ven-methodology")
 
+    def test_duplicate_summary_heading_is_rejected(self):
+        record = self.make_record()
+        self.register(record)
+        with record.open("a", encoding="utf-8") as stream:
+            stream.write("\n## Summary\nContradictory replacement summary.\n")
+        issues = journal.check_journal(record, self.root)
+        self.assertTrue(any("duplicate journal section" in issue for issue in issues), issues)
+        with self.assertRaisesRegex(ValueError, "duplicate journal section"):
+            journal.resume(self.root, "ven-methodology")
+
     def test_untrusted_instructions_are_not_executed_by_reader(self):
         marker = self.root / "execution-marker"
         body = (
