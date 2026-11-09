@@ -111,8 +111,7 @@ def visible_markdown_lines(content: str):
             in_comment = '-->' not in line.split('<!--', 1)[1]
             continue
         if fence_char is not None:
-            end = r'^ {0,3}' + re.escape(fence_char) + '{' + str(fence_width) + r',}\s*
-$'
+            end = r'^ {0,3}' + re.escape(fence_char) + '{' + str(fence_width) + r',}\s*$'
             if re.match(end, line):
                 fence_char = None
             continue
