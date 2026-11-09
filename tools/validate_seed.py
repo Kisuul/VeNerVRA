@@ -144,7 +144,7 @@ def markdown_sections(content: str) -> Dict[str, str]:
 
 def index_links_to(index: Path, target: Path, root: Path) -> bool:
     """Check an actual resolving local Markdown link, never a bare mention."""
-    if not index.is_file():
+    if not index.is_file() or index_markup_errors(index.read_text(encoding='utf-8')):
         return False
     canonical_root = root.resolve()
     canonical_target = target.resolve()
@@ -165,6 +165,59 @@ def index_links_to(index: Path, target: Path, root: Path) -> bool:
                 return True
     return False
 
+
+DATE_RE = re.compile(r'\d{4}-\d{2}-\d{2}\Z')
+RAW_HTML_RE = re.compile(r'<\s*/?\s*[A-Za-z][A-Za-z0-9-]*(?=\s|/?>|$)', re.IGNORECASE)
+JOURNAL_SECTIONS = ('Summary', 'Evidence', 'Current alternatives',
+                    'Decisions / reversals', 'Revisit when')
+HANDOFF_SECTIONS = ('Summary', 'Evidence', 'Next decisive check', 'Revisit when')
+
+
+def unsupported_html_errors(content: str) -> List[str]:
+    """Restrict indexed research Markdown to prose/links, not active raw HTML.
+
+    HTML tags in fenced or inline-code examples are excluded from this check.
+    If a tag occurs in active content, the record/index fails closed rather
+    than attempting to guess the rendered semantics of nested HTML blocks.
+    """
+    for line in visible_markdown_lines(content):
+        without_inline_code = re.sub(r'(`+).*?\1', '', line)
+        if RAW_HTML_RE.search(without_inline_code):
+            return ['unsupported raw HTML in indexed Markdown']
+    return []
+
+
+def index_markup_errors(content: str) -> List[str]:
+    """Indexes use only single-line inline-code spans; reject ambiguity."""
+    issues = unsupported_html_errors(content)
+    for line in visible_markdown_lines(content):
+        runs = re.findall(r'`+', line)
+        run_lengths = {len(run) for run in runs}
+        if any(sum(len(run) == n for run in runs) % 2 for n in run_lengths):
+            issues.append('unterminated or multiline inline code in research INDEX.md')
+            break
+    return issues
+
+
+def orphan_investigations(root: Path) -> List[str]:
+    """Find unindexed real research folders; synthetic fixtures are exempt."""
+    research = root / 'research'
+    if not research.is_dir():
+        return []
+    issues: List[str] = []
+    for folder in sorted(research.iterdir()):
+        if not folder.is_dir() or folder.name in {'examples', 'templates'}:
+            continue
+        if not (folder / 'INDEX.md').is_file() and any(folder.rglob('*.md')):
+            issues.append(f'research/{folder.name}: investigation has records but no INDEX.md')
+    return issues
+
+
+def nonempty_section(value: str) -> bool:
+    """Only check structurally meaningful text, not factual truth."""
+    stripped = value.strip()
+    return bool(stripped and stripped not in {'-', '*', '[]', '...', 'TODO', 'TBD'})
+
 def validate_record(path: Path, slug: str) -> List[str]:
     txt = path.read_text(encoding='utf-8')
     fields, problems = parse_frontmatter(txt)
@@ -181,10 +234,13 @@ def validate_record(path: Path, slug: str) -> List[str]:
         problems.append('id must use lowercase letters, numbers and hyphens')
     for date_key in ('created', 'updated'):
         if date_key in fields:
-            try:
-                dt.date.fromisoformat(fields[date_key])
-            except ValueError:
-                problems.append(f'invalid {date_key} ISO date')
+            if not DATE_RE.fullmatch(fields[date_key]):
+                problems.append(f'invalid {date_key}: require YYYY-MM-DD')
+            else:
+                try:
+                    dt.date.fromisoformat(fields[date_key])
+                except ValueError:
+                    problems.append(f'invalid {date_key} ISO date')
     if fields.get('created') and fields.get('updated'):
         try:
             if dt.date.fromisoformat(fields['updated']) < dt.date.fromisoformat(fields['created']):
@@ -192,9 +248,22 @@ def validate_record(path: Path, slug: str) -> List[str]:
         except ValueError:
             pass
     parsed_sections = markdown_sections(txt)
-    for heading in ('Summary', 'Evidence', 'Revisit when'):
+    headings = [line[3:].strip() for line in visible_markdown_lines(txt)
+                if line.startswith('## ')]
+    required = JOURNAL_SECTIONS if fields.get('kind') == 'journal' else (
+        HANDOFF_SECTIONS if fields.get('kind') == 'handoff'
+        and fields.get('status') in {'active', 'disputed'} else
+        ('Summary', 'Evidence', 'Revisit when'))
+    for heading in required:
         if heading not in parsed_sections:
             problems.append(f'missing ## {heading} section')
+        elif (fields.get('kind') in {'journal', 'handoff'}
+              and not nonempty_section(parsed_sections[heading])):
+            problems.append(f'empty ## {heading} section')
+        if headings.count(heading) > 1:
+            problems.append(f'duplicate ## {heading} section')
+    if fields.get('kind') in {'journal', 'handoff'}:
+        problems.extend(unsupported_html_errors(txt))
     if fields.get('status') == 'superseded' and '## Superseded by' not in txt:
         problems.append('superseded record missing ## Superseded by link')
     if fields.get('kind') in {'claim', 'hypothesis'} and fields.get('epistemic_status') == 'not-applicable':
@@ -238,10 +307,16 @@ def validate_repo(root: Path) -> List[str]:
                     errors.append(f'{source.relative_to(root)}: {problem}')
 
     master_index = root / 'research' / 'INDEX.md'
+    errors.extend(orphan_investigations(root))
+    if master_index.is_file():
+        errors.extend(f'{master_index.relative_to(root)}: {e}'
+                      for e in index_markup_errors(master_index.read_text(encoding='utf-8')))
     seen: Dict[str, Path] = {}
     for directory in investigation_dirs(root):
         slug = directory.name
         rel_idx = (directory / 'INDEX.md').relative_to(root / 'research').as_posix()
+        errors.extend(f'{(directory / "INDEX.md").relative_to(root)}: {e}'
+                      for e in index_markup_errors((directory / 'INDEX.md').read_text(encoding='utf-8')))
         if not index_links_to(master_index, directory / 'INDEX.md', root):
             errors.append(f'research/INDEX.md does not register {rel_idx}')
         for record in sorted(directory.glob('*.md')):

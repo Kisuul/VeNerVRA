@@ -28,7 +28,7 @@ VeNerVRA (**Ven**, Value-Neutral Virtual Research Assistant) is an independent, 
 | Location | Ownership / purpose |
 | --- | --- |
 | [VEN.md](VEN.md) | Agent identity and authoritative operating contract |
-| [Ven 2.1.x plan](docs/ven-2.1/README.md) | Roadmap; 2.1.0.1 hostile-remediation candidate on a review branch |
+| [Ven 2.1.x plan](docs/ven-2.1/README.md) | Roadmap; [2.1.0.2 hardening candidate](docs/ven-2.1/RELEASE_2.1.0.2.md) on review branch |
 | [ven/](ven/) | Research, memory, continuity, verification, and permissions protocols; [2.1.0 journal](ven/JOURNAL_PROTOCOL.md) |
 | [Hostile audit playbook](docs/HOSTILE_SOFTWARE_AUDIT.md) | Candidate methodology for evidence-first adversarial software audits; not an installed skill |
 | [research/](research/) | Authoritative research records, templates, and clearly synthetic demonstration |
@@ -37,9 +37,9 @@ VeNerVRA (**Ven**, Value-Neutral Virtual Research Assistant) is an independent, 
 | [tools/](tools/) | Read-only structural validator and [journal CLI](tools/journal.py); no network or external writes |
 | [docs/](docs/) | Architecture, source standards, security, and Ven 1.1 migration |
 
-## Ven 2.1.0.1 journal-hardening candidate (review branch)
+## Ven 2.1.0.2 journal-hardening candidate (review branch)
 
-See the [2.1.0.1 release-candidate report](docs/ven-2.1/RELEASE_2.1.0.1.md), [2.1.0 baseline](docs/ven-2.1/RELEASE_2.1.0.md), and [methodology records](research/ven-methodology/INDEX.md). The read-only journal CLI checks actual Markdown sections and index links, refuses duplicate research record IDs, and excludes drafts from default resumption (use `--include-drafts` to opt in). Passing static tests is not proof of signed identity, publishing authority, or fresh-model continuity.
+See the [2.1.0.2 release candidate](docs/ven-2.1/RELEASE_2.1.0.2.md), [Ven 2 audit](https://github.com/Kisuul/VeNerVRA/blob/6f982e057d05aee440b65561551272b59cbf8f89/docs/audits/VEN_2_1_0_1_HOSTILE_2026_11_09.md) and [methodology records](research/ven-methodology/INDEX.md). The read-only journal CLI now rejects raw-HTML ambiguity and incomplete records, uses canonical dates and explicit index validation, retains bounded evidence and revisions in JSON recall, and exposes sensitivity, authorship and omissions. The [fresh-model trial](docs/ven-2.1/FRESH_CONTEXT_GATE.md) is defined but **NOT RUN**. Structural CI is not proof of model identity, publishing authorization, or behavioral continuity.
 
 ## Validation
 

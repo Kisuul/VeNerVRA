@@ -1,6 +1,6 @@
 # Ven 2.1.x — Continuity, Provenance, and Researcher Development
 
-**Status:** 2.1.x roadmap PROPOSED. [2.1.0.1 hostile-remediation candidate](RELEASE_2.1.0.1.md) addresses confirmed defects in the [2.1.0 implementation](RELEASE_2.1.0.md) on a separate review branch. The fresh-model behavioral gate is still unrun; 2.1.1–2.1.3 remain unimplemented.
+**Status:** 2.1.x roadmap PROPOSED. [2.1.0.2 remediation candidate](RELEASE_2.1.0.2.md) addresses the subsequent [Ven 2 hostile audit](https://github.com/Kisuul/VeNerVRA/blob/6f982e057d05aee440b65561551272b59cbf8f89/docs/audits/VEN_2_1_0_1_HOSTILE_2026_11_09.md). The [fresh-model acceptance trial](FRESH_CONTEXT_GATE.md) remains unrun; 2.1.1–2.1.3 remain unimplemented.
 **Prepared:** 2026-11-09
 **Baseline:** `Kisuul/VeNerVRA` `main` at `e05c346f0308ff45493ab44aa3bae14dce1b7a3e`
 **Governing documents:** [Ven contract](../../VEN.md), [research protocol](../../ven/RESEARCH_PROTOCOL.md), [memory protocol](../../ven/MEMORY_PROTOCOL.md), [state protocol](../../ven/STATE_PROTOCOL.md), [permissions](../../ven/PERMISSIONS.md).
