@@ -11,14 +11,18 @@
 - [First real methodology journal](journal-2026-11-09-continuity-foundation.md) — documented recognition of an absent journal workflow, alternative explanations and correction.
 - [2.1.0 delivery handoff](handoff-2026-11-09-release-readiness.md) — exact original task scope, unrun demonstrations, and historical resumption path.
 - [2.1.0.1 hostile-correction journal](journal-2026-11-09-hostile-corrections.md) — independently reproduced reader weaknesses, new regression evidence, unresolved limitations.
-- [2.1.0.1 remediation handoff](handoff-2026-11-09-2101-readiness.md) — patch status, checks and fresh-model acceptance gap.
+- [2.1.0.1 remediation handoff](handoff-2026-11-09-2101-readiness.md) — historical patch status, checks and fresh-model acceptance gap.
+- [2.1.0.2 methodological correction](journal-2026-11-09-2102-audit-corrections.md) — Ven 2 audit findings, corrections, negative controls and caveats.
+- [2.1.0.2 delivery handoff](handoff-2026-11-09-2102-readiness.md) — current patch state, evidence, unresolved release gate and next check.
 
 ## Method and release
 
 - [Journal protocol](../../ven/JOURNAL_PROTOCOL.md)
 - [2.1.0 release candidate](../../docs/ven-2.1/RELEASE_2.1.0.md)
 - [2.1.0.1 remediation candidate](../../docs/ven-2.1/RELEASE_2.1.0.1.md)
+- [2.1.0.2 hardening candidate](../../docs/ven-2.1/RELEASE_2.1.0.2.md)
+- [Fresh-model acceptance protocol](../../docs/ven-2.1/FRESH_CONTEXT_GATE.md) — not executed
 - [Continuity design](../../docs/ven-2.1/README.md)
 - [Research and memory protocol](../../ven/MEMORY_PROTOCOL.md)
 
-**Next decisive check:** After independent review of 2.1.0.1, start a genuinely fresh model context at an immutable checkout and test whether it recovers the 2.1.0 failures, verified patch findings, and remaining acceptance gap without inventing execution or permission history.
+**Next decisive check:** Independently re-audit the final 2.1.0.2 code and test corpus; then execute the [fresh-context trial](../../docs/ven-2.1/FRESH_CONTEXT_GATE.md) on its immutable commit with withheld grading. Structural CI alone does not authorize release.
