@@ -129,9 +129,13 @@ def resume(root: Path, slug: str, limit: int = 5) -> dict:
     for candidate in index.parent.glob("*.md"):
         if candidate.name == "INDEX.md" or candidate.name not in listed:
             continue
-        text = candidate.read_text(encoding="utf-8")
+        actual, _ = canonical_record(root, candidate)
+        raw = actual.read_bytes()
+        text = raw.decode("utf-8")
         fields, errors = parse_frontmatter(text)
-        errors.extend(validate_record(candidate, slug))
+        errors.extend(validate_record(actual, slug))
+        if fields.get("kind") == "journal":
+            errors.extend(check_journal(actual, root))
         if errors:
             raise ValueError(f"invalid indexed record {candidate.name}: {'; '.join(errors)}")
         if fields["status"] not in ("active", "draft", "disputed"):
@@ -141,7 +145,7 @@ def resume(root: Path, slug: str, limit: int = 5) -> dict:
         body = sections(text)
         records.append({
             "path": candidate.relative_to(root).as_posix(),
-            "sha256": hashlib.sha256(candidate.read_bytes()).hexdigest(),
+            "sha256": hashlib.sha256(raw).hexdigest(),
             "id": fields["id"],
             "kind": fields["kind"],
             "updated": fields["updated"],

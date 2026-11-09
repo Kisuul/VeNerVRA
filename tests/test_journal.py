@@ -110,6 +110,17 @@ class TestJournal(unittest.TestCase):
         self.assertEqual("unsigned_repository_content", result["assurance"])
         self.assertIn("correct", result["records"][0]["summary"])
 
+    def test_real_repository_public_preflight(self):
+        record = ROOT / "research/ven-methodology/journal-2026-11-09-continuity-foundation.md"
+        self.assertEqual([], journal.check_journal(record, ROOT, public=True))
+
+    def test_real_repository_indexed_recovery(self):
+        result = journal.resume(ROOT, "ven-methodology")
+        kinds = {record["kind"] for record in result["records"]}
+        self.assertIn("journal", kinds)
+        self.assertIn("handoff", kinds)
+        self.assertEqual("unsigned_repository_content", result["assurance"])
+
     def test_command_is_read_only(self):
         before = self.record.read_bytes()
         self.assertFalse(journal.check_journal(self.record, self.root))
