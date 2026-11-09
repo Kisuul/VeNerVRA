@@ -28,6 +28,7 @@ VeNerVRA (**Ven**, Value-Neutral Virtual Research Assistant) is an independent, 
 | Location | Ownership / purpose |
 | --- | --- |
 | [VEN.md](VEN.md) | Agent identity and authoritative operating contract |
+| [Ven 2.1.x proposal](docs/ven-2.1/README.md) | Branch-only plan for journal, continuity, provenance and authority; not implemented |
 | [ven/](ven/) | Research, memory, continuity, verification, and permissions protocols |
 | [Hostile audit playbook](docs/HOSTILE_SOFTWARE_AUDIT.md) | Candidate methodology for evidence-first adversarial software audits; not an installed skill |
 | [research/](research/) | Authoritative research records, templates, and clearly synthetic demonstration |
