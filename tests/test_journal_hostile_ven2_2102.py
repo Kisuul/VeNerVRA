@@ -76,6 +76,17 @@ class TestVenTwoAudit2102(unittest.TestCase):
         output = journal.resume(self.root, "ven-methodology")
         self.assertEqual(1, output["available_records"])
 
+    def test_h08_escaped_root_link_counts_as_investigation_registration(self):
+        """PROVEN: root index can be a literal escaped link, not a real link."""
+        record = self.record()
+        self.link(record)
+        master = self.root / "research" / "INDEX.md"
+        master.write_text("Literal only: \\[Fake](ven-methodology/INDEX.md)\n",
+                          encoding="utf-8")
+        self.assertTrue(validator.index_links_to(master, self.index, self.root))
+        self.assertEqual([], journal.check_journal(record, self.root))
+        self.assertEqual(1, journal.resume(self.root, "ven-methodology")["available_records"])
+
     def test_h02_root_level_orphan_record_is_invisible_to_validator(self):
         """PROVEN: research/ghost.md is neither indexed nor flagged."""
         repo = self.repo_copy()
