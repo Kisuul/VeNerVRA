@@ -133,7 +133,7 @@ class Ven2102HostileRegressions(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "YYYY-MM-DD"):
             journal.scaffold("ven-methodology", "2026-11-09-week", "ven",
                              "2026-W46-1", "Invalid canonical date")
-        with self.assertRaisesRegex(ValueError):
+        with self.assertRaises(ValueError):
             journal.scaffold("ven-methodology", "2026-11-09-bad", "ven",
                              "2026-02-30", "Impossible date")
 
