@@ -14,9 +14,10 @@ import re
 import sys
 from pathlib import Path
 
-from validate_seed import (ID_RE, investigation_dirs, index_links_to,
-                           markdown_sections, parse_frontmatter, validate_record,
-                           visible_markdown_lines)
+from validate_seed import (DATE_RE, ID_RE, investigation_dirs, index_links_to,
+                           markdown_sections, orphan_investigations,
+                           parse_frontmatter, unsupported_html_errors,
+                           validate_record, visible_markdown_lines)
 
 ROOT = Path(__file__).resolve().parents[1]
 JOURNAL_SECTIONS = (
@@ -116,6 +117,7 @@ def check_journal(path: Path, root: Path, public: bool = False) -> list[str]:
     parsed = sections(text)
     headings = [line[3:].strip() for line in visible_markdown_lines(text)
                 if line.startswith("## ")]
+    errors.extend(unsupported_html_errors(text))
     for header in JOURNAL_SECTIONS:
         if header[3:] not in parsed:
             errors.append("missing journal section " + header)
@@ -130,15 +132,24 @@ def check_journal(path: Path, root: Path, public: bool = False) -> list[str]:
     if not index_links_to(root_index, local_index, root):
         errors.append("investigation absent from research/INDEX.md")
     errors.extend(duplicate_record_ids(root))
+    errors.extend(orphan_investigations(root))
     if public:
         errors.extend(public_preflight(text, fields))
     return list(dict.fromkeys(errors))
 
 
-def resume(root: Path, slug: str, limit: int = 5, *, include_drafts: bool = False) -> dict:
+def resume(root: Path, slug: str, limit: int = 5, *, include_drafts: bool = False,
+           max_sensitivity: str = "public", max_section_chars: int = 4096) -> dict:
     """Load bounded, indexed records as data; no evaluation or tool execution."""
     if not ID_RE.fullmatch(slug) or slug in ("templates", "examples"):
         raise ValueError("invalid investigation slug")
+    sensitivity_rank = {"public": 0, "internal": 1, "restricted": 2}
+    if max_sensitivity not in sensitivity_rank:
+        raise ValueError("invalid maximum sensitivity")
+    if not (128 <= max_section_chars <= 16384):
+        raise ValueError("max_section_chars must be 128..16384")
+    if not (1 <= limit <= 100):
+        raise ValueError("limit must be 1..100")
     root = root.resolve()
     index = root / "research" / slug / "INDEX.md"
     master = root / "research" / "INDEX.md"
@@ -146,11 +157,12 @@ def resume(root: Path, slug: str, limit: int = 5, *, include_drafts: bool = Fals
         raise ValueError("investigation indexes unavailable")
     if not index_links_to(master, index, root):
         raise ValueError("investigation not registered in root index")
-    collisions = duplicate_record_ids(root)
+    collisions = duplicate_record_ids(root) + orphan_investigations(root)
     if collisions:
         raise ValueError("invalid repository identities: " + "; ".join(collisions))
     records: list[dict] = []
     excluded_drafts = 0
+    excluded_sensitivity = 0
     for candidate in index.parent.glob("*.md"):
         if candidate.name == "INDEX.md" or not index_links_to(index, candidate, root):
             continue
@@ -171,7 +183,17 @@ def resume(root: Path, slug: str, limit: int = 5, *, include_drafts: bool = Fals
                 continue
         elif fields["status"] not in ("active", "disputed"):
             continue
+        if sensitivity_rank[fields["sensitivity"]] > sensitivity_rank[max_sensitivity]:
+            excluded_sensitivity += 1
+            continue
         body = sections(text)
+        section_names = ("Summary", "Evidence", "Current alternatives",
+                         "Decisions / reversals", "Open decisions",
+                         "Next decisive check", "Revisit when")
+        compact = {name: body[name][:max_section_chars]
+                   for name in section_names if name in body}
+        truncated = [name for name in section_names
+                     if name in body and len(body[name]) > max_section_chars]
         records.append({
             "path": candidate.relative_to(root).as_posix(),
             "sha256": hashlib.sha256(raw).hexdigest(),
@@ -179,11 +201,19 @@ def resume(root: Path, slug: str, limit: int = 5, *, include_drafts: bool = Fals
             "kind": fields["kind"],
             "updated": fields["updated"],
             "status": fields["status"],
+            "created": fields["created"],
+            "sensitivity": fields["sensitivity"],
+            "author": fields["author"],
+            "confidence": fields["confidence"],
+            "epistemic_status": fields["epistemic_status"],
             "evidence": fields["evidence"],
             "sources": fields["sources"],
-            "summary": body.get("Summary", ""),
-            "revisit_when": body.get("Revisit when", ""),
-            "next_decisive_check": body.get("Next decisive check", ""),
+            "summary": compact.get("Summary", ""),
+            "revisit_when": compact.get("Revisit when", ""),
+            "next_decisive_check": compact.get("Next decisive check", ""),
+            "sections": compact,
+            "truncated_sections": truncated,
+            "requires_source_followup": bool(truncated),
         })
     order = {"active": 0, "disputed": 1, "draft": 2}
     records.sort(key=lambda r: (order[r["status"]],
@@ -197,6 +227,10 @@ def resume(root: Path, slug: str, limit: int = 5, *, include_drafts: bool = Fals
         "available_records": len(records),
         "omitted_by_limit": max(0, len(records) - limit),
         "excluded_drafts": excluded_drafts,
+        "excluded_by_sensitivity": excluded_sensitivity,
+        "max_sensitivity": max_sensitivity,
+        "max_section_chars": max_section_chars,
+        "privacy_note": "Sensitivity filtering is local convenience, not host authorization. No identity signature verified.",
         "selection_policy": "active first, then disputed; handoffs first within status; newest within priority",
     }
 
@@ -206,6 +240,8 @@ def scaffold(slug: str, record_id: str, author: str, date: str, title: str) -> s
         raise ValueError("invalid investigation slug")
     if not ID_RE.fullmatch(record_id) or not ID_RE.fullmatch(author):
         raise ValueError("id and author must be lowercase hyphenated identifiers")
+    if not DATE_RE.fullmatch(date):
+        raise ValueError("date must be canonical YYYY-MM-DD")
     dt.date.fromisoformat(date)
     if "\n" in title or "\r" in title:
         raise ValueError("title cannot contain line breaks")
@@ -248,6 +284,10 @@ def main(argv: list[str] | None = None) -> int:
     recall.add_argument("--json", action="store_true")
     recall.add_argument("--include-drafts", action="store_true",
                         help="include low-assurance draft records after active/disputed entries")
+    recall.add_argument("--max-sensitivity", choices=["public", "internal", "restricted"],
+                        default="public", help="explicit local inclusion ceiling, not authorization")
+    recall.add_argument("--max-section-chars", type=int, default=4096,
+                        help="per-section character limit, 128..16384; truncation is reported")
 
     args = parser.parse_args(argv)
     try:
@@ -264,7 +304,10 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if args.limit < 1 or args.limit > 100:
             raise ValueError("limit must be between 1 and 100")
-        result = resume(args.root, args.slug, args.limit, include_drafts=args.include_drafts)
+        result = resume(args.root, args.slug, args.limit,
+                        include_drafts=args.include_drafts,
+                        max_sensitivity=args.max_sensitivity,
+                        max_section_chars=args.max_section_chars)
         if args.json:
             print(json.dumps(result, indent=2, ensure_ascii=False))
         else:
