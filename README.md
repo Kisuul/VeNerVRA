@@ -28,14 +28,18 @@ VeNerVRA (**Ven**, Value-Neutral Virtual Research Assistant) is an independent, 
 | Location | Ownership / purpose |
 | --- | --- |
 | [VEN.md](VEN.md) | Agent identity and authoritative operating contract |
-| [Ven 2.1.x proposal](docs/ven-2.1/README.md) | Branch-only plan for journal, continuity, provenance and authority; not implemented |
-| [ven/](ven/) | Research, memory, continuity, verification, and permissions protocols |
+| [Ven 2.1.x plan](docs/ven-2.1/README.md) | Roadmap; 2.1.0 journal milestone implemented on a review branch |
+| [ven/](ven/) | Research, memory, continuity, verification, and permissions protocols; [2.1.0 journal](ven/JOURNAL_PROTOCOL.md) |
 | [Hostile audit playbook](docs/HOSTILE_SOFTWARE_AUDIT.md) | Candidate methodology for evidence-first adversarial software audits; not an installed skill |
 | [research/](research/) | Authoritative research records, templates, and clearly synthetic demonstration |
 | [integration/kestrel/](integration/kestrel/) | **Proposed**, inactive KestrelGaming integration and skill candidates |
 | [evaluations/](evaluations/) | Behavioral test specifications and scorecard (unrun) |
-| [tools/](tools/) | Local structural validator; no network, external writes, or dependencies |
+| [tools/](tools/) | Read-only structural validator and [journal CLI](tools/journal.py); no network or external writes |
 | [docs/](docs/) | Architecture, source standards, security, and Ven 1.1 migration |
+
+## Ven 2.1.0 journal milestone (review branch)
+
+See the [2.1.0 release candidate](docs/ven-2.1/RELEASE_2.1.0.md) and [methodology records](research/ven-methodology/INDEX.md). The read-only journal CLI supports draft generation, structural/public-content preflight, and indexed resumption without executing retrieved text. It does not provide signed identity, autonomous memory, publishing authority, or proven cross-model continuity.
 
 ## Validation
 

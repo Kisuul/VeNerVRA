@@ -1,6 +1,6 @@
 # Ven 2.1.x — Continuity, Provenance, and Researcher Development
 
-**Status:** PROPOSAL ONLY — branch design; not implemented, installed, validated, or merged.
+**Status:** 2.1.x roadmap PROPOSED. The [2.1.0 journal release candidate](RELEASE_2.1.0.md) is implemented on a separate review branch; 2.1.1–2.1.3 remain unimplemented and no cross-model behavioral trial has run.
 **Prepared:** 2026-11-09
 **Baseline:** `Kisuul/VeNerVRA` `main` at `e05c346f0308ff45493ab44aa3bae14dce1b7a3e`
 **Governing documents:** [Ven contract](../../VEN.md), [research protocol](../../ven/RESEARCH_PROTOCOL.md), [memory protocol](../../ven/MEMORY_PROTOCOL.md), [state protocol](../../ven/STATE_PROTOCOL.md), [permissions](../../ven/PERMISSIONS.md).
@@ -73,8 +73,6 @@ Version labels are proposed **milestones**, not current releases or commitments 
 5. **Evaluation ownership:** Who controls withheld tasks, grades cross-model trials and authorizes promotion of methods?
 6. **Concurrency:** Are independent session branches reconciled into a signed DAG, and what happens when two successor models disagree?
 
-## Change scope of this branch
+## Change scope and implementation boundary
 
-**Documentation only.** Propose schemas, evaluation design, migration and gates; leave `VEN.md`, active protocols, 2.0 records, runtime, permissions and Kestrel untouched. No claim of signature verification, deployment, efficacy, or continuity trial execution.
-
-**Next authorized action after review:** approve or revise the proposed 2.1.0 journal convention and choose a private/public storage boundary *before* implementing or running a multi-model test.
+The original 2.1.x design branch is documentation only. The separate [2.1.0 release candidate](RELEASE_2.1.0.md) adds a scoped journal convention, read-only CLI, tests and public methodology records. It does not change `VEN.md`, install Kestrel skills, implement signed provenance or claim behavioral continuity. The 2.1.0 feature needs review and a genuine fresh-context trial before its full behavioral gate is satisfied.

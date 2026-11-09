@@ -7,7 +7,7 @@ status: draft
 epistemic_status: not-applicable
 confidence: unresolved
 evidence: unverified
-sensitivity: public
+sensitivity: internal
 author: actual-author-id
 created: 2026-11-04
 updated: 2026-11-04
