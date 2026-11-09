@@ -102,6 +102,29 @@ class Ven2102HostileRegressions(unittest.TestCase):
         self.assertEqual([], journal.check_journal(path, self.root))
         self.assertEqual(1, journal.resume(self.root, "ven-methodology")["available_records"])
 
+    def test_split_raw_html_opening_is_rejected(self):
+        path = self.record(content=(
+            "<pre\nclass='untrusted'>\n"
+            "## Summary\nFORGED\n"
+            "## Evidence\nFake evidence.\n"
+            "## Current alternatives\nFake alternatives.\n"
+            "## Decisions / reversals\nFake reversal.\n"
+            "## Revisit when\nFake check.\n"
+            "</pre>\n"
+        ))
+        self.register(path)
+        issues = journal.check_journal(path, self.root)
+        self.assertTrue(any("unsupported raw HTML" in x for x in issues), issues)
+        with self.assertRaisesRegex(ValueError, "invalid indexed record"):
+            journal.resume(self.root, "ven-methodology")
+
+    def test_multiline_inline_code_link_does_not_register_record(self):
+        path = self.record()
+        self.register(text=
+            "`A multiline code example\n[Fake](journal-first.md)\nend`\n")
+        self.assertFalse(validator.index_links_to(self.index, path, self.root))
+        self.assertEqual(0, journal.resume(self.root, "ven-methodology")["available_records"])
+
     def test_v2_f02_global_validator_rejects_incomplete_journal(self):
         checkout = self.root / "repo-copy"
         shutil.copytree(ROOT, checkout, ignore=shutil.ignore_patterns(".git", "__pycache__", "*.pyc"))
