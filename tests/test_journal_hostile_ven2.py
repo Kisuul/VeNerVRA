@@ -183,6 +183,21 @@ class TestIndependentHostileReview(unittest.TestCase):
         self.assertIn("created: 2026-W46-1", rendered)
         self.assertIn("updated: 2026-W46-1", rendered)
 
+    def test_a9_orphan_research_directory_escapes_global_validation(self):
+        """CONFIRMED INDEX GAP: research without INDEX.md is not inspected at all."""
+        checkout = self.root / "orphan-case"
+        shutil.copytree(ROOT, checkout, ignore=shutil.ignore_patterns(".git", "__pycache__", "*.pyc"))
+        orphan = checkout / "research" / "unindexed-methodology"
+        orphan.mkdir(parents=True)
+        # A malformed new record without frontmatter and without registration.
+        (orphan / "journal-forgotten.md").write_text(
+            "# Orphaned journal\n\nNO FRONTMATTER\n## Summary\nLost context.\n",
+            encoding="utf-8"
+        )
+        self.assertEqual([], validator.validate_repo(checkout))
+        with self.assertRaisesRegex(ValueError, "indexes unavailable"):
+            journal.resume(checkout, "unindexed-methodology")
+
     def test_control_valid_journal_is_read_without_execution(self):
         """NEGATIVE CONTROL: plain journal content remains recoverable and inert."""
         marker = self.root / "should-never-be-created"
