@@ -127,7 +127,7 @@ class TestJournal(unittest.TestCase):
     def test_real_repository_resume_in_fresh_python_process(self):
         proc = subprocess.run(
             [sys.executable, str(ROOT / "tools" / "journal.py"),
-             "resume", "ven-methodology", "--root", str(ROOT), "--json"],
+             "resume", "ven-methodology", "--root", str(ROOT), "--limit", "100", "--json"],
             capture_output=True, text=True, check=False,
         )
         self.assertEqual(0, proc.returncode, proc.stderr)
@@ -135,6 +135,8 @@ class TestJournal(unittest.TestCase):
         found = {x["id"] for x in result["records"]}
         self.assertIn("2026-11-09-ven-hostile-regression-lessons", found)
         self.assertIn("2026-11-09-ven-2101-remediation-handoff", found)
+        self.assertIn("2026-11-09-ven-2102-hostile-correction", found)
+        self.assertIn("2026-11-09-ven-2102-release-handoff", found)
         self.assertEqual(0, result["excluded_drafts"])
         self.assertEqual(0, result["omitted_by_limit"])
 
