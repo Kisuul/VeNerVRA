@@ -161,6 +161,28 @@ class TestIndependentHostileReview(unittest.TestCase):
         self.assertEqual("unverified", item["evidence"])
         self.assertTrue(journal.check_journal(record, self.root, public=True))
 
+    def test_a7_valid_iso_week_date_passes_validator_but_breaks_recall(self):
+        """CONFIRMED parser inconsistency: fromisoformat accepts ISO week dates, sort does not."""
+        record = self.record()
+        raw = record.read_text(encoding="utf-8")
+        record.write_text(raw.replace("updated: 2026-11-09",
+                                      "updated: 2026-W46-1"),
+                          encoding="utf-8")
+        self.register(record)
+        self.assertEqual([], validator.validate_record(record, "ven-methodology"))
+        self.assertEqual([], journal.check_journal(record, self.root))
+        with self.assertRaisesRegex(ValueError, "invalid literal for int"):
+            journal.resume(self.root, "ven-methodology")
+
+    def test_a8_week_date_is_accepted_by_scaffold_despite_documented_format(self):
+        """CONFIRMED: generator accepts an ISO week date outside its documented YYYY-MM-DD form."""
+        rendered = journal.scaffold(
+            "ven-methodology", "2026-11-09-week-date", "ven",
+            "2026-W46-1", "Valid but noncanonical ISO date"
+        )
+        self.assertIn("created: 2026-W46-1", rendered)
+        self.assertIn("updated: 2026-W46-1", rendered)
+
     def test_control_valid_journal_is_read_without_execution(self):
         """NEGATIVE CONTROL: plain journal content remains recoverable and inert."""
         marker = self.root / "should-never-be-created"
