@@ -7,5 +7,6 @@ This repository is the authoritative home for Ven's **research investigations**,
 | [Kestrel adversarial audit and blind-first review](kestrel-adversarial-audit/INDEX.md) | Source-pinned math-audit findings, P0 review-skill research, proposed blind-first method and next verification | ACTIVE — research and design; behavioral trial NOT RUN |
 | [Synthetic cache fixture](examples/synthetic-cache/INDEX.md) | Non-empirical, intentionally hypothetical example exercising record schema and unresolved evidence | Example only — NOT RESEARCH |
 | [Hostile audit readiness](hostile-audit-readiness/INDEX.md) | Candidate evidence-first hostile software audit methodology and resumable verification checkpoint | PARTIAL — no behavioral evaluation |
+| [Ven methodology and continuity](ven-methodology/INDEX.md) | Evidence-bearing researcher journal, 2.1.0 handoff, recovery tests and limits | ACTIVE — tool implementation; fresh-model trial NOT RUN |
 
 For a new investigation create `research/<slug>/INDEX.md`, register it here, and follow [record templates](templates/INDEX.md). Never store restricted or private user materials in a public repository.
