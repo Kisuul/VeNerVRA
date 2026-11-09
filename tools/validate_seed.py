@@ -144,7 +144,7 @@ def markdown_sections(content: str) -> Dict[str, str]:
 
 def index_links_to(index: Path, target: Path, root: Path) -> bool:
     """Check an actual resolving local Markdown link, never a bare mention."""
-    if not index.is_file() or unsupported_html_errors(index.read_text(encoding='utf-8')):
+    if not index.is_file() or index_markup_errors(index.read_text(encoding='utf-8')):
         return False
     canonical_root = root.resolve()
     canonical_target = target.resolve()
@@ -167,7 +167,7 @@ def index_links_to(index: Path, target: Path, root: Path) -> bool:
 
 
 DATE_RE = re.compile(r'\d{4}-\d{2}-\d{2}\Z')
-RAW_HTML_RE = re.compile(r'</?[A-Za-z][A-Za-z0-9-]*(?:\s+[^<>]*?)?\s*/?>', re.IGNORECASE)
+RAW_HTML_RE = re.compile(r'<\s*/?\s*[A-Za-z][A-Za-z0-9-]*(?=\s|/?>|$)', re.IGNORECASE)
 JOURNAL_SECTIONS = ('Summary', 'Evidence', 'Current alternatives',
                     'Decisions / reversals', 'Revisit when')
 HANDOFF_SECTIONS = ('Summary', 'Evidence', 'Next decisive check', 'Revisit when')
@@ -185,6 +185,18 @@ def unsupported_html_errors(content: str) -> List[str]:
         if RAW_HTML_RE.search(without_inline_code):
             return ['unsupported raw HTML in indexed Markdown']
     return []
+
+
+def index_markup_errors(content: str) -> List[str]:
+    """Indexes use only single-line inline-code spans; reject ambiguity."""
+    issues = unsupported_html_errors(content)
+    for line in visible_markdown_lines(content):
+        runs = re.findall(r'`+', line)
+        run_lengths = {len(run) for run in runs}
+        if any(sum(len(run) == n for run in runs) % 2 for n in run_lengths):
+            issues.append('unterminated or multiline inline code in research INDEX.md')
+            break
+    return issues
 
 
 def orphan_investigations(root: Path) -> List[str]:
@@ -298,13 +310,13 @@ def validate_repo(root: Path) -> List[str]:
     errors.extend(orphan_investigations(root))
     if master_index.is_file():
         errors.extend(f'{master_index.relative_to(root)}: {e}'
-                      for e in unsupported_html_errors(master_index.read_text(encoding='utf-8')))
+                      for e in index_markup_errors(master_index.read_text(encoding='utf-8')))
     seen: Dict[str, Path] = {}
     for directory in investigation_dirs(root):
         slug = directory.name
         rel_idx = (directory / 'INDEX.md').relative_to(root / 'research').as_posix()
         errors.extend(f'{(directory / "INDEX.md").relative_to(root)}: {e}'
-                      for e in unsupported_html_errors((directory / 'INDEX.md').read_text(encoding='utf-8')))
+                      for e in index_markup_errors((directory / 'INDEX.md').read_text(encoding='utf-8')))
         if not index_links_to(master_index, directory / 'INDEX.md', root):
             errors.append(f'research/INDEX.md does not register {rel_idx}')
         for record in sorted(directory.glob('*.md')):
