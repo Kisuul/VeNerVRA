@@ -28,7 +28,7 @@ VeNerVRA (**Ven**, Value-Neutral Virtual Research Assistant) is an independent, 
 | Location | Ownership / purpose |
 | --- | --- |
 | [VEN.md](VEN.md) | Agent identity and authoritative operating contract |
-| [Ven 2.1.x plan](docs/ven-2.1/README.md) | Roadmap; 2.1.0 journal milestone implemented on a review branch |
+| [Ven 2.1.x plan](docs/ven-2.1/README.md) | Roadmap; 2.1.0.1 hostile-remediation candidate on a review branch |
 | [ven/](ven/) | Research, memory, continuity, verification, and permissions protocols; [2.1.0 journal](ven/JOURNAL_PROTOCOL.md) |
 | [Hostile audit playbook](docs/HOSTILE_SOFTWARE_AUDIT.md) | Candidate methodology for evidence-first adversarial software audits; not an installed skill |
 | [research/](research/) | Authoritative research records, templates, and clearly synthetic demonstration |
@@ -37,9 +37,9 @@ VeNerVRA (**Ven**, Value-Neutral Virtual Research Assistant) is an independent, 
 | [tools/](tools/) | Read-only structural validator and [journal CLI](tools/journal.py); no network or external writes |
 | [docs/](docs/) | Architecture, source standards, security, and Ven 1.1 migration |
 
-## Ven 2.1.0 journal milestone (review branch)
+## Ven 2.1.0.1 journal-hardening candidate (review branch)
 
-See the [2.1.0 release candidate](docs/ven-2.1/RELEASE_2.1.0.md) and [methodology records](research/ven-methodology/INDEX.md). The read-only journal CLI supports draft generation, structural/public-content preflight, and indexed resumption without executing retrieved text. It does not provide signed identity, autonomous memory, publishing authority, or proven cross-model continuity.
+See the [2.1.0.1 release-candidate report](docs/ven-2.1/RELEASE_2.1.0.1.md), [2.1.0 baseline](docs/ven-2.1/RELEASE_2.1.0.md), and [methodology records](research/ven-methodology/INDEX.md). The read-only journal CLI checks actual Markdown sections and index links, refuses duplicate research record IDs, and excludes drafts from default resumption (use `--include-drafts` to opt in). Passing static tests is not proof of signed identity, publishing authority, or fresh-model continuity.
 
 ## Validation
 

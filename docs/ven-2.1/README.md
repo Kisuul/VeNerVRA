@@ -1,6 +1,6 @@
 # Ven 2.1.x — Continuity, Provenance, and Researcher Development
 
-**Status:** 2.1.x roadmap PROPOSED. The [2.1.0 journal release candidate](RELEASE_2.1.0.md) is implemented on a separate review branch; 2.1.1–2.1.3 remain unimplemented and no cross-model behavioral trial has run.
+**Status:** 2.1.x roadmap PROPOSED. [2.1.0.1 hostile-remediation candidate](RELEASE_2.1.0.1.md) addresses confirmed defects in the [2.1.0 implementation](RELEASE_2.1.0.md) on a separate review branch. The fresh-model behavioral gate is still unrun; 2.1.1–2.1.3 remain unimplemented.
 **Prepared:** 2026-11-09
 **Baseline:** `Kisuul/VeNerVRA` `main` at `e05c346f0308ff45493ab44aa3bae14dce1b7a3e`
 **Governing documents:** [Ven contract](../../VEN.md), [research protocol](../../ven/RESEARCH_PROTOCOL.md), [memory protocol](../../ven/MEMORY_PROTOCOL.md), [state protocol](../../ven/STATE_PROTOCOL.md), [permissions](../../ven/PERMISSIONS.md).
@@ -75,4 +75,4 @@ Version labels are proposed **milestones**, not current releases or commitments 
 
 ## Change scope and implementation boundary
 
-The original 2.1.x design branch is documentation only. The separate [2.1.0 release candidate](RELEASE_2.1.0.md) adds a scoped journal convention, read-only CLI, tests and public methodology records. It does not change `VEN.md`, install Kestrel skills, implement signed provenance or claim behavioral continuity. The 2.1.0 feature needs review and a genuine fresh-context trial before its full behavioral gate is satisfied.
+The original 2.1.x design branch is documentation only. The 2.1.0 feature adds a scoped journal convention and read-only CLI; the separate [2.1.0.1 remediation](RELEASE_2.1.0.1.md) fixes the hostile audit findings. It does not change `VEN.md`, install Kestrel skills, implement signed provenance or claim behavioral continuity. Both PRs require review and a genuine fresh-model continuation trial before the full behavioral gate can pass.
