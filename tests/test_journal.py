@@ -111,8 +111,10 @@ class TestJournal(unittest.TestCase):
         self.assertIn("correct", result["records"][0]["summary"])
 
     def test_real_repository_public_preflight(self):
-        record = ROOT / "research/ven-methodology/journal-2026-11-09-continuity-foundation.md"
-        self.assertEqual([], journal.check_journal(record, ROOT, public=True))
+        for name in ("journal-2026-11-09-continuity-foundation.md",
+                     "journal-2026-11-09-hostile-corrections.md"):
+            record = ROOT / "research" / "ven-methodology" / name
+            self.assertEqual([], journal.check_journal(record, ROOT, public=True), name)
 
     def test_real_repository_indexed_recovery(self):
         result = journal.resume(ROOT, "ven-methodology")
@@ -120,6 +122,21 @@ class TestJournal(unittest.TestCase):
         self.assertIn("journal", kinds)
         self.assertIn("handoff", kinds)
         self.assertEqual("unsigned_repository_content", result["assurance"])
+        self.assertGreaterEqual(result["available_records"], 4)
+
+    def test_real_repository_resume_in_fresh_python_process(self):
+        proc = subprocess.run(
+            [sys.executable, str(ROOT / "tools" / "journal.py"),
+             "resume", "ven-methodology", "--root", str(ROOT), "--json"],
+            capture_output=True, text=True, check=False,
+        )
+        self.assertEqual(0, proc.returncode, proc.stderr)
+        result = json.loads(proc.stdout)
+        found = {x["id"] for x in result["records"]}
+        self.assertIn("2026-11-09-ven-hostile-regression-lessons", found)
+        self.assertIn("2026-11-09-ven-2101-remediation-handoff", found)
+        self.assertEqual(0, result["excluded_drafts"])
+        self.assertEqual(0, result["omitted_by_limit"])
 
     def test_command_is_read_only(self):
         before = self.record.read_bytes()

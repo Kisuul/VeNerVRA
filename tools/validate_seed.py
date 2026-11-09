@@ -94,6 +94,77 @@ def resolve_local_link(source: Path, target: str, root: Path) -> Optional[str]:
     return None
 
 
+def visible_markdown_lines(content: str):
+    """Yield prose/links outside fenced or indented code and HTML comments.
+
+    Deliberately supports a narrow journal/index grammar, not full CommonMark.
+    """
+    fence_char = None
+    fence_width = 0
+    in_comment = False
+    for line in content.splitlines():
+        if in_comment:
+            if '-->' in line:
+                in_comment = False
+            continue
+        if '<!--' in line:
+            in_comment = '-->' not in line.split('<!--', 1)[1]
+            continue
+        if fence_char is not None:
+            end = r'^ {0,3}' + re.escape(fence_char) + '{' + str(fence_width) + r',}\s*$'
+            if re.match(end, line):
+                fence_char = None
+            continue
+        start = re.match(r'^ {0,3}([`~])\1{2,}', line)
+        if start:
+            fence_char = start.group(1)
+            fence_width = len(start.group(0).lstrip())
+            continue
+        if line.startswith(('    ', '\t')):
+            continue
+        yield line
+
+
+def markdown_sections(content: str) -> Dict[str, str]:
+    """Parse strict level-two headings, ignoring untrusted examples in code."""
+    result: Dict[str, str] = {}
+    heading: Optional[str] = None
+    body: List[str] = []
+    for line in visible_markdown_lines(content):
+        if line.startswith('## '):
+            if heading is not None:
+                result[heading] = '\n'.join(body).strip()
+            heading, body = line[3:].rstrip(), []
+        elif heading is not None:
+            body.append(line)
+    if heading is not None:
+        result[heading] = '\n'.join(body).strip()
+    return result
+
+
+def index_links_to(index: Path, target: Path, root: Path) -> bool:
+    """Check an actual resolving local Markdown link, never a bare mention."""
+    if not index.is_file():
+        return False
+    canonical_root = root.resolve()
+    canonical_target = target.resolve()
+    if not canonical_target.is_relative_to(canonical_root):
+        return False
+    for line in visible_markdown_lines(index.read_text(encoding='utf-8')):
+        line = re.sub(r'(`+).*?\1', '', line)  # inline code is not an index link
+        for match in LINK_RE.finditer(line):
+            raw = match.group(1).strip().split(' ', 1)[0].strip('<>')
+            if raw.startswith(('http:', 'https:', 'mailto:', 'data:', '#')):
+                continue
+            raw = raw.split('#', 1)[0].split('?', 1)[0]
+            if not raw:
+                continue
+            dest = ((canonical_root / raw.lstrip('/'))
+                    if raw.startswith('/') else index.parent / raw).resolve()
+            if dest == canonical_target and dest.is_relative_to(canonical_root):
+                return True
+    return False
+
 def validate_record(path: Path, slug: str) -> List[str]:
     txt = path.read_text(encoding='utf-8')
     fields, problems = parse_frontmatter(txt)
@@ -120,9 +191,10 @@ def validate_record(path: Path, slug: str) -> List[str]:
                 problems.append('updated is earlier than created')
         except ValueError:
             pass
-    for heading in ('## Summary', '## Evidence', '## Revisit when'):
-        if heading not in txt:
-            problems.append(f'missing {heading} section')
+    parsed_sections = markdown_sections(txt)
+    for heading in ('Summary', 'Evidence', 'Revisit when'):
+        if heading not in parsed_sections:
+            problems.append(f'missing ## {heading} section')
     if fields.get('status') == 'superseded' and '## Superseded by' not in txt:
         problems.append('superseded record missing ## Superseded by link')
     if fields.get('kind') in {'claim', 'hypothesis'} and fields.get('epistemic_status') == 'not-applicable':
@@ -158,20 +230,20 @@ def validate_repo(root: Path) -> List[str]:
     for source in root.rglob('*.md'):
         if 'templates' in source.relative_to(root).parts:
             continue
-        for match in LINK_RE.finditer(source.read_text(encoding='utf-8')):
-            problem = resolve_local_link(source, match.group(1), root)
-            if problem:
-                errors.append(f'{source.relative_to(root)}: {problem}')
+        for line in visible_markdown_lines(source.read_text(encoding='utf-8')):
+            line = re.sub(r'(`+).*?\1', '', line)
+            for match in LINK_RE.finditer(line):
+                problem = resolve_local_link(source, match.group(1), root)
+                if problem:
+                    errors.append(f'{source.relative_to(root)}: {problem}')
 
     master_index = root / 'research' / 'INDEX.md'
-    master_text = master_index.read_text(encoding='utf-8') if master_index.exists() else ''
     seen: Dict[str, Path] = {}
     for directory in investigation_dirs(root):
         slug = directory.name
         rel_idx = (directory / 'INDEX.md').relative_to(root / 'research').as_posix()
-        if rel_idx not in master_text:
+        if not index_links_to(master_index, directory / 'INDEX.md', root):
             errors.append(f'research/INDEX.md does not register {rel_idx}')
-        idx_text = (directory / 'INDEX.md').read_text(encoding='utf-8')
         for record in sorted(directory.glob('*.md')):
             if record.name == 'INDEX.md':
                 continue
@@ -185,7 +257,7 @@ def validate_repo(root: Path) -> List[str]:
                     errors.append(f'duplicate id {key} at {rel} and {seen[key].relative_to(root)}')
                 else:
                     seen[key] = record
-            if record.name not in idx_text:
+            if not index_links_to(directory / 'INDEX.md', record, root):
                 errors.append(f'{rel}: record missing from nearest INDEX.md')
     return errors
 

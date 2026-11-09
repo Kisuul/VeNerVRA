@@ -74,6 +74,28 @@ class TestValidator(unittest.TestCase):
         p.write_text(p.read_text().replace('status: draft', 'status: superseded', 1))
         self.assertTrue(any('superseded record missing' in issue for issue in self.issues()))
 
+    def test_prose_mention_cannot_register_record(self):
+        idx = self.sample / 'INDEX.md'
+        content = idx.read_text()
+        self.assertIn('(question-2026-11-04-cache.md)', content)
+        idx.write_text(content.replace('(question-2026-11-04-cache.md)', 'question-2026-11-04-cache.md'))
+        self.assertTrue(any('record missing from nearest INDEX.md' in issue for issue in self.issues()))
+
+    def test_prose_mention_cannot_register_investigation(self):
+        idx = self.root / 'research/INDEX.md'
+        content = idx.read_text()
+        self.assertIn('(examples/synthetic-cache/INDEX.md)', content)
+        idx.write_text(content.replace('(examples/synthetic-cache/INDEX.md)', 'examples/synthetic-cache/INDEX.md'))
+        self.assertTrue(any('does not register' in issue for issue in self.issues()))
+
+    def test_index_link_in_fenced_example_is_not_registration(self):
+        idx = self.sample / 'INDEX.md'
+        content = idx.read_text()
+        idx.write_text(content.replace('(question-2026-11-04-cache.md)',
+                     '(question-example-not-active.md)') +
+                     '\n~~~md\n[Example](question-2026-11-04-cache.md)\n~~~\n')
+        self.assertTrue(any('record missing from nearest INDEX.md' in issue for issue in self.issues()))
+
     def test_no_escape_from_repo(self):
         p = self.root / 'README.md'
         p.write_text(p.read_text() + '\n[bad](../../private.txt)\n')
