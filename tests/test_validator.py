@@ -30,53 +30,53 @@ class TestValidator(unittest.TestCase):
 
     def test_invalid_status_fails(self):
         p = self.sample / 'hypothesis-2026-11-04-cache.md'
-        p.write_text(p.read_text().replace('status: draft', 'status: certified', 1))
+        p.write_text(p.read_text(encoding='utf-8').replace('status: draft', 'status: certified', 1), encoding='utf-8')
         self.assertTrue(any('unsupported status' in issue for issue in self.issues()))
 
     def test_duplicate_id_fails(self):
         p = self.sample / 'hypothesis-2026-11-04-cache.md'
-        p.write_text(p.read_text().replace('2026-11-04-cache-speed-hypothesis', '2026-11-04-cache-question', 1))
+        p.write_text(p.read_text(encoding='utf-8').replace('2026-11-04-cache-speed-hypothesis', '2026-11-04-cache-question', 1), encoding='utf-8')
         self.assertTrue(any('duplicate id' in issue for issue in self.issues()))
 
     def test_unindexed_record_fails(self):
         original = self.sample / 'hypothesis-2026-11-04-cache.md'
         new = self.sample / 'hypothesis-second.md'
-        new.write_text(original.read_text().replace('2026-11-04-cache-speed-hypothesis', '2026-11-04-different-hypothesis', 1))
+        new.write_text(original.read_text(encoding='utf-8').replace('2026-11-04-cache-speed-hypothesis', '2026-11-04-different-hypothesis', 1), encoding='utf-8')
         self.assertTrue(any('record missing from nearest INDEX.md' in issue for issue in self.issues()))
 
     def test_wrong_scope_fails(self):
         p = self.sample / 'question-2026-11-04-cache.md'
-        p.write_text(p.read_text().replace('scope: research:synthetic-cache', 'scope: research:someone-else'))
+        p.write_text(p.read_text(encoding='utf-8').replace('scope: research:synthetic-cache', 'scope: research:someone-else'), encoding='utf-8')
         self.assertTrue(any('scope must be' in issue for issue in self.issues()))
 
     def test_updated_before_created_fails(self):
         p = self.sample / 'question-2026-11-04-cache.md'
-        p.write_text(p.read_text().replace('updated: 2026-11-04', 'updated: 2025-11-04'))
+        p.write_text(p.read_text(encoding='utf-8').replace('updated: 2026-11-04', 'updated: 2025-11-04'), encoding='utf-8')
         self.assertTrue(any('earlier than created' in issue for issue in self.issues()))
 
     def test_broken_local_link_fails(self):
         p = self.root / 'README.md'
-        p.write_text(p.read_text() + '\n[broken](not-a-real-file.md)\n')
+        p.write_text(p.read_text(encoding='utf-8') + '\n[broken](not-a-real-file.md)\n', encoding='utf-8')
         self.assertTrue(any('broken link' in issue for issue in self.issues()))
 
     def test_missing_revisit_section_fails(self):
         p = self.sample / 'handoff-2026-11-04-cache.md'
-        p.write_text(p.read_text().replace('## Revisit when', '## Absent heading'))
+        p.write_text(p.read_text(encoding='utf-8').replace('## Revisit when', '## Absent heading'), encoding='utf-8')
         self.assertTrue(any('missing ## Revisit when' in issue for issue in self.issues()))
 
     def test_claim_requires_epistemic_status(self):
         p = self.sample / 'hypothesis-2026-11-04-cache.md'
-        p.write_text(p.read_text().replace('epistemic_status: proposed', 'epistemic_status: not-applicable'))
+        p.write_text(p.read_text(encoding='utf-8').replace('epistemic_status: proposed', 'epistemic_status: not-applicable'), encoding='utf-8')
         self.assertTrue(any('claim or hypothesis cannot' in issue for issue in self.issues()))
 
     def test_superseded_requires_link(self):
         p = self.sample / 'hypothesis-2026-11-04-cache.md'
-        p.write_text(p.read_text().replace('status: draft', 'status: superseded', 1))
+        p.write_text(p.read_text(encoding='utf-8').replace('status: draft', 'status: superseded', 1), encoding='utf-8')
         self.assertTrue(any('superseded record missing' in issue for issue in self.issues()))
 
     def test_no_escape_from_repo(self):
         p = self.root / 'README.md'
-        p.write_text(p.read_text() + '\n[bad](../../private.txt)\n')
+        p.write_text(p.read_text(encoding='utf-8') + '\n[bad](../../private.txt)\n', encoding='utf-8')
         self.assertTrue(any('escapes repository' in issue for issue in self.issues()))
 
 
