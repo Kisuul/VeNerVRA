@@ -7,19 +7,19 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class TestContract(unittest.TestCase):
     def test_identity_not_software_agent(self):
-        contract = (ROOT / 'VEN.md').read_text()
+        contract = (ROOT / 'VEN.md').read_text(encoding='utf-8')
         self.assertIn('Value-Neutral Virtual Research Assistant', contract)
         self.assertIn('Research-Journal', contract)
         self.assertIn('Source Rule', contract)
 
     def test_memory_does_not_authorize_actions(self):
-        contract = (ROOT / 'VEN.md').read_text().lower()
+        contract = (ROOT / 'VEN.md').read_text(encoding='utf-8').lower()
         self.assertIn('memory', contract)
         self.assertIn('permissions', contract)
         self.assertIn('not', contract)
 
     def test_original_source_preserved(self):
-        source = (ROOT / 'docs/source/VeNerVRA-1.1.txt').read_text()
+        source = (ROOT / 'docs/source/VeNerVRA-1.1.txt').read_text(encoding='utf-8')
         self.assertIn('Value-Neutral Virtual Research Assistant', source)
         self.assertIn('Default to Research-Journal mode', source)
         self.assertIn('Source Rule (Detect Error)', source)
@@ -30,7 +30,7 @@ class TestContract(unittest.TestCase):
             self.assertTrue((ROOT / f'integration/kestrel/candidates/{name}/SKILL.md').exists())
 
     def test_synthetic_fixture_has_no_fake_benchmark(self):
-        example = (ROOT / 'research/examples/synthetic-cache/handoff-2026-11-04-cache.md').read_text()
+        example = (ROOT / 'research/examples/synthetic-cache/handoff-2026-11-04-cache.md').read_text(encoding='utf-8')
         self.assertIn('NOT RUN', example)
         self.assertIn('synthetic', example.lower())
 
